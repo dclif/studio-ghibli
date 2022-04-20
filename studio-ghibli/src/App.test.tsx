@@ -37,3 +37,28 @@ test('renders film title', async () => {
   const filmTitle = await screen.findByText(/Castle in the Sky/i);
   expect(filmTitle).toBeInTheDocument();
 });
+
+
+
+test('renders correct error message with 500 error code', async () => {
+  server.use(
+    rest.get("https://ghibliapi.herokuapp.com/films", (req, res, ctx) => {
+      return res(ctx.status(500));
+    })
+  );
+  render(<App />);
+  const errorMessage = await screen.findByText(/Oops… something went wrong, try again 🤕/i);
+  expect(errorMessage).toBeInTheDocument();
+});
+
+
+test('renders correct error message with 418 error code', async () => {
+  server.use(
+    rest.get("https://ghibliapi.herokuapp.com/films", (req, res, ctx) => {
+      return res(ctx.status(418));
+    })
+  );
+  render(<App />);
+  const errorMessage = await screen.findByText(/418 I'm a tea pot 🫖, silly/i);
+  expect(errorMessage).toBeInTheDocument();
+});

@@ -11,8 +11,13 @@ function App() {
   }, []);
 
   const getFilm = async () => {
-    const apiResponse = await axios.get(`https://ghibliapi.herokuapp.com/films`);
-    setFilm(apiResponse.data[0].title);
+    await axios.get(`https://ghibliapi.herokuapp.com/films`).then(function (response) {
+      const apiResponse = response;
+      setFilm(apiResponse.data[0].title);
+    }).catch(function (error) {
+      if (error.response.status === 500) { setFilm("Oops… something went wrong, try again 🤕") }
+      else if (error.response.status === 418) { setFilm("418 I'm a tea pot 🫖, silly") }
+    })
   };
 
   return (
